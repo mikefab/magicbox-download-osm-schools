@@ -1,22 +1,21 @@
-xml_file=CMR.osm
+xml_file="schools/osm/$1.osm"
 declare -A attributes
 
 echo "Extracting school attributes names for csv file..."
 while IFS="\>" read -d \< tag; do
     key=$(echo $tag | awk -F'k="' '{print $2}' | cut -d '"' -f 1)
-    if [[ $key != '' ]]; then
+    if [[ $key != '' ]] && [[ $key != *" "* ]]; then
         attributes["$key"]="$key"
-        # echo $key
     fi
 done < "$xml_file"
 echo "Done."
+echo ""
 
 columns_str=""
 for key in "${attributes[@]}"; do
-    if [[ $key == 'lat' ]]; then
-        columns_str="${columns_str}@${key} "
-    else
+    if [[ $key != 'lat' ]] && [[ $key != 'long' ]] && [[ $key != 'name' ]]; then
         columns_str="${columns_str}${key} "
     fi
 done
-echo $columns_str
+
+osmconvert $xml_file --all-to-nodes --csv="@id @lon @lat name $columns_str"  --csv-headline --csv-separator=, >  "schools/osm/$1.csv"
