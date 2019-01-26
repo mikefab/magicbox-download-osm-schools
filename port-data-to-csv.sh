@@ -1,4 +1,4 @@
-xml_file="schools/osm/$1.osm"
+xml_file="schools/osm/osm/$1.osm"
 declare -A attributes
 
 echo "Extracting school attributes names for csv file..."
@@ -18,4 +18,4 @@ for key in "${attributes[@]}"; do
     fi
 done
 
-osmconvert $xml_file --all-to-nodes --csv="@id @lon @lat name $columns_str"  --csv-headline --csv-separator=, >  "schools/osm/$1.csv"
+osmconvert $xml_file --all-to-nodes --csv="@id @lon @lat name $columns_str"  --csv-headline --csv-separator=, >  "schools/osm/csv/$1.csv"

@@ -23,13 +23,13 @@ while IFS="" read -r filename_path; do
     fi
 
     echo "Extracting $country school data"
-    if [[ ! -e "schools/osm/$filename" ]]; then
-        echo "schools/osm/$filename file does not exist"
+    if [[ ! -e "schools/osm/pbf/$filename" ]]; then
+        echo "schools/osm/pbf/$filename file does not exist"
         exit 1
     fi
     country_code=$(jq --arg COUNTRY "${country}" '.[] | select(.name == $COUNTRY) | ."alpha-3"' countries.json)
     country_code=$(echo ${country_code} | sed -e 's/"//g')
-    osmosis --rbf schools/osm/$filename --nkv keyValueList="amenity.school" --wx schools/osm/$country_code.osm
+    osmosis --rbf schools/osm/pbf/$filename --nkv keyValueList="amenity.school" --wx schools/osm/osm/$country_code.osm
 
     ./port-data-to-csv.sh $country_code
 done < "$file"
